@@ -697,11 +697,13 @@ func (options *Html) DocumentHeader(out *bytes.Buffer) {
 	out.WriteString(ending)
 	out.WriteString(">\n")
 	if options.css != "" {
-		out.WriteString("  <link rel=\"stylesheet\" type=\"text/css\" href=\"")
-		attrEscape(out, []byte(options.css))
-		out.WriteString("\"")
-		out.WriteString(ending)
-		out.WriteString(">\n")
+		for _, css := range strings.Split(options.css, ",") {
+			out.WriteString("  <link rel=\"stylesheet\" type=\"text/css\" href=\"")
+			attrEscape(out, []byte(css))
+			out.WriteString("\"")
+			out.WriteString(ending)
+			out.WriteString(">\n")
+		}
 	}
 	out.WriteString("</head>\n")
 	out.WriteString("<body>\n")
