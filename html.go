@@ -80,6 +80,7 @@ type Html struct {
 	closeTag string // how to end singleton tags: either " />" or ">"
 	title    string // document title
 	css      string // optional css file url (used with HTML_COMPLETE_PAGE)
+	script   string // optional script file url (used with HTML_COMPLETE_PAGE)
 
 	parameters HtmlRendererParameters
 
@@ -105,14 +106,14 @@ const (
 //
 // flags is a set of HTML_* options ORed together.
 // title is the title of the document, and css is a URL for the document's
-// stylesheet.
-// title and css are only used when HTML_COMPLETE_PAGE is selected.
-func HtmlRenderer(flags int, title string, css string) Renderer {
-	return HtmlRendererWithParameters(flags, title, css, HtmlRendererParameters{})
+// stylesheet, and scriopt is a URL for scripts.
+// title, css and script are only used when HTML_COMPLETE_PAGE is selected.
+func HtmlRenderer(flags int, title string, css string, script string) Renderer {
+	return HtmlRendererWithParameters(flags, title, css, script, HtmlRendererParameters{})
 }
 
 func HtmlRendererWithParameters(flags int, title string,
-	css string, renderParameters HtmlRendererParameters) Renderer {
+	css string, script string, renderParameters HtmlRendererParameters) Renderer {
 	// configure the rendering engine
 	closeTag := htmlClose
 	if flags&HTML_USE_XHTML != 0 {
@@ -128,6 +129,7 @@ func HtmlRendererWithParameters(flags int, title string,
 		closeTag:   closeTag,
 		title:      title,
 		css:        css,
+		script:     script,
 		parameters: renderParameters,
 
 		headerCount:  0,
@@ -703,6 +705,15 @@ func (options *Html) DocumentHeader(out *bytes.Buffer) {
 			out.WriteString("\"")
 			out.WriteString(ending)
 			out.WriteString(">\n")
+		}
+	}
+	if options.script != "" {
+		for _, script := range strings.Split(options.script, ",") {
+			out.WriteString("  <script type=\"text/javascript\" src=\"")
+			attrEscape(out, []byte(script))
+			out.WriteString("\"")
+			out.WriteString(ending)
+			out.WriteString("></script>\n")
 		}
 	}
 	out.WriteString("</head>\n")

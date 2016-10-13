@@ -296,7 +296,7 @@ type Options struct {
 func MarkdownBasic(input []byte) []byte {
 	// set up the HTML renderer
 	htmlFlags := HTML_USE_XHTML
-	renderer := HtmlRenderer(htmlFlags, "", "")
+	renderer := HtmlRenderer(htmlFlags, "", "", "")
 
 	// set up the parser
 	return MarkdownOptions(input, renderer, Options{Extensions: 0})
@@ -323,7 +323,7 @@ func MarkdownBasic(input []byte) []byte {
 // * Custom Header IDs
 func MarkdownCommon(input []byte) []byte {
 	// set up the HTML renderer
-	renderer := HtmlRenderer(commonHtmlFlags, "", "")
+	renderer := HtmlRenderer(commonHtmlFlags, "", "", "")
 	return MarkdownOptions(input, renderer, Options{
 		Extensions: commonExtensions})
 }
